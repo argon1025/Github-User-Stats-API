@@ -24,6 +24,7 @@
     "@nestjs/common": "^7.6.15",
     "@nestjs/config": "^1.0.1",
     "@nestjs/core": "^7.6.15",
+    "@nestjs/mapped-types": "*",
     "@nestjs/platform-express": "^7.6.15",
     "cross-env": "^7.0.3",
     "reflect-metadata": "^0.1.13",
