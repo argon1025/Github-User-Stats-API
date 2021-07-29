@@ -1,10 +1,12 @@
 import axios from 'axios';
 
-export function stats_request(headers, variables) {
+export function stats_fetcher(token, variables) {
   return axios({
     url: 'https://api.github.com/graphql',
     method: 'post',
-    headers,
+    headers: {
+      Authorization: `bearer ${token}`,
+    },
     data: {
       query: `
           query userInfo($login: String!) {
@@ -42,10 +44,10 @@ export function stats_request(headers, variables) {
     },
   });
 }
-export function total_commit(token, variables) {
-  axios({
+export function totalCommit_fetcher(token, username) {
+  return axios({
     method: 'get',
-    url: `https://api.github.com/search/commits?q=author:${variables.login}`,
+    url: `https://api.github.com/search/commits?q=author:${username}`,
     headers: {
       'Content-Type': 'application/json',
       Accept: 'application/vnd.github.cloak-preview',
