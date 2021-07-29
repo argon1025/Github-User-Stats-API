@@ -6,6 +6,6 @@ export class StatsController {
   constructor(private readonly statsService: StatsService) {}
   @Get(':username')
   statsFecher(@Param('username') username: string) {
-    return this.statsService.fetchStats(username);
+    return this.statsService.statsFetch(process.env.TOKEN, username);
   }
 }
