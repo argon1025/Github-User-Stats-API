@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
 import { Logger } from '@nestjs/common';
+import { HttpExceptionFilter } from './ExceptionFilters/HttpException.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -11,6 +12,9 @@ async function bootstrap() {
   const SERVER_PORT = configService.get<number>('SERVER_PORT', 80);
   const SERVER_ENV = configService.get<string>('NODE_ENV', null);
   const SERVER_HOST = configService.get<string>('SERVER_HOST', 'localhost');
+
+  // ExceptionFilter
+  app.useGlobalFilters(new HttpExceptionFilter());
 
   // Configuration Load ERROR
   if (SERVER_ENV === null) {
