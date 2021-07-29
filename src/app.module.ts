@@ -4,6 +4,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { LoggerMiddleware } from './middlewares/Logger.middleware';
 import { ConfigModule } from '@nestjs/config';
+import { StatsModule } from './stats/stats.module';
 
 // Load ENV
 const ENV = process.env;
@@ -14,6 +15,7 @@ const ENV = process.env;
       isGlobal: true,
       envFilePath: !ENV.NODE_ENV ? '.env' : `.env.${ENV.NODE_ENV}`,
     }),
+    StatsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
