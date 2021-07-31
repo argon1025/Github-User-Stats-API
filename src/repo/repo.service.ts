@@ -1,5 +1,5 @@
 import { HttpException, Injectable } from '@nestjs/common';
-import { repo_fetcher } from 'src/common/utils/repo.axios';
+import { all_repo_fetcher, repo_fetcher } from 'src/common/utils/repo.axios';
 
 @Injectable()
 export class RepoService {
@@ -31,5 +31,19 @@ export class RepoService {
       }
       return data.organization.repository;
     }
+  }
+
+  async allrepoFetch(token, username) {
+    const result = await all_repo_fetcher(token, { login: username });
+    const data = result.data.data;
+    if (!!result.data.errors) {
+      if (result.data.errors[0].type == 'RATE_LIMITED') {
+        throw new HttpException({ code: 'github.RATE_LIMITED', message: '해당토큰의 접근 가능한 횟수가 초과되었습니다.' }, 400);
+      }
+    }
+    if (!data.user && !data.organization) {
+      throw new HttpException({ code: 'github.NOTFOUNDUSER', message: '해당 유저는 존재하지 않습니다.' }, 400);
+    }
+    return data.user.repositories.nodes;
   }
 }
