@@ -9,15 +9,15 @@ async function bootstrap() {
 
   // Configuration Load
   const configService = app.get<ConfigService>(ConfigService);
-  const SERVER_PORT = configService.get<number>('SERVER_PORT', 80);
+  const SERVER_PORT = configService.get<number>('SERVER_PORT', null);
   const SERVER_ENV = configService.get<string>('NODE_ENV', null);
-  const SERVER_HOST = configService.get<string>('SERVER_HOST', 'localhost');
+  const SERVER_HOST = configService.get<string>('SERVER_HOST', 'null');
 
   // ExceptionFilter
   app.useGlobalFilters(new HttpExceptionFilter());
 
   // Configuration Load ERROR
-  if (SERVER_ENV === null) {
+  if (SERVER_PORT === null) {
     // error logging
     Logger.error('SERVER_ENV is not defined');
   } else {
