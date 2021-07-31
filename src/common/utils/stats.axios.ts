@@ -47,7 +47,7 @@ export function stats_fetcher(token, variables) {
     });
   } catch (error) {
     if (error.response) {
-      throw new HttpException({ code: 'github.UNKOWN', message: error.message }, 400);
+      throw new HttpException({ code: 'UNKOWN', message: error.message }, 400);
     }
   }
 }
@@ -65,9 +65,9 @@ export async function totalCommit_fetcher(token, username) {
   } catch (error) {
     if (error.response) {
       if (error.response.status == 403) {
-        throw new HttpException({ code: 'github.SHORT_RATE_LIMITED', message: '깃허브에서 일시적으로 접근을 막았습니다. 재시도 해주세요.' }, 403);
+        throw new HttpException({ code: 'SHORT_RATE_LIMITED', message: '깃허브에서 일시적으로 접근을 막았습니다. 재시도 해주세요.' }, 403);
       }
-      throw new HttpException({ code: 'github.UNKOWN', message: error.message }, 400);
+      throw new HttpException({ code: 'UNKOWN', message: error.message }, 400);
     }
   }
 }

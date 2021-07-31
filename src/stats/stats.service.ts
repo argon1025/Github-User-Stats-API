@@ -23,11 +23,11 @@ export class StatsService {
     // };
     if (!!result.data.error) {
       if (result.data.error[0].type == 'RATE_LIMITED') {
-        throw new HttpException({ code: 'github.RATE_LIMITED', message: '해당토큰의 접근 가능한 횟수가 초과되었습니다.' }, 400);
+        throw new HttpException({ code: 'RATE_LIMITED', message: '해당토큰의 접근 가능한 횟수가 초과되었습니다.' }, 403);
       }
     }
     if (result.data.data.user == null) {
-      throw new HttpException({ code: 'github.NOTFOUNDUSER', message: '해당 유저는 존재하지 않습니다.' }, 400);
+      throw new HttpException({ code: 'NOT_FOUND_USER', message: '해당 유저는 존재하지 않습니다.' }, 404);
     }
     const user = result.data.data.user;
     stats.name = user.name || user.login;
@@ -35,7 +35,8 @@ export class StatsService {
     stats.totalIssues = user.issues.totalCount;
 
     stats.totalCommits = user.contributionsCollection.totalCommitContributions;
-    stats.totalCommits += await this.totalCommitsFetch(token, username);
+
+    stats.totalCommits += await StatsService.totalCommitsFetch(token, username);
     stats.totalCommits += user.contributionsCollection.restrictedContributionsCount;
 
     stats.totalPRs = user.pullRequests.totalCount;
@@ -47,8 +48,7 @@ export class StatsService {
     }, 0);
     return stats;
   }
-  async totalCommitsFetch(token, username) {
-    //   let res = await retryer(fetchTotalCommits, { login: username });
+  static async totalCommitsFetch(token, username) {
     const res = await totalCommit_fetcher(token, username);
     if (res.data.total_count) {
       return res.data.total_count;
