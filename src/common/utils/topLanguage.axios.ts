@@ -36,7 +36,7 @@ export function toplanguage_fetcher(token, variables) {
     });
   } catch (error) {
     if (error.response) {
-      throw new HttpException({ code: 'github.UNKOWN', message: error.message }, 400);
+      throw new HttpException({ code: 'UNKOWN', message: error.message }, 400);
     }
   }
 }
