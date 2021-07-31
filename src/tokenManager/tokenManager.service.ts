@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { HttpException, Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
 @Injectable()
@@ -91,6 +91,25 @@ export class TokenManagerService {
     } else {
       // 토큰스코프를 +1 증가시킨다
       this.setTokenScope(this.getTokenScope() + 1);
+    }
+  }
+
+  async githubApiFetcher(username: string, fetcher: any) {
+    // 유저 이름이 올바르지 않을 경우
+    if (!username) {
+      throw new HttpException({ code: 'tokenManager.githubApiFetcher.InvalidUsername', message: '올바르지 않은 유저이름 입니다' }, 401);
+    }
+
+    // fetcher 시도
+    try {
+      let TOKEN = this.getToken();
+      const USER_NAME = username;
+      let result = await fetcher(TOKEN, USER_NAME);
+
+      // 성공했을 경우 데이터 리턴
+      return result;
+    } catch (error) {
+      console.log(error);
     }
   }
 }
