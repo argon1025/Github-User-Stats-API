@@ -4,8 +4,8 @@ import { toplanguage_fetcher } from 'src/common/utils/topLanguage.axios';
 export class TopLanguagesService {
   async topLanguageFetch(token, username) {
     const result = await toplanguage_fetcher(token, { login: username });
-    if (!!result.data.error) {
-      if (result.data.error[0].type == 'RATE_LIMITED') {
+    if (!!result.data.errors) {
+      if (result.data.errors[0].type == 'RATE_LIMITED') {
         throw new HttpException({ code: 'RATE_LIMITED', message: '해당토큰의 접근 가능한 횟수가 초과되었습니다.' }, 403);
       }
     }

@@ -14,15 +14,15 @@ export class StatsService {
     };
     const result = await stats_fetcher(token, { login: username });
     // const test_error = {
-    //   error: [
+    //   errors: [
     //     {
     //       type: 'RATE_LIMITED',
     //       message: 'API rate limit exceeded for user ID test',
     //     },
     //   ],
     // };
-    if (!!result.data.error) {
-      if (result.data.error[0].type == 'RATE_LIMITED') {
+    if (!!result.data.errors) {
+      if (result.data.errors[0].type == 'RATE_LIMITED') {
         throw new HttpException({ code: 'RATE_LIMITED', message: '해당토큰의 접근 가능한 횟수가 초과되었습니다.' }, 403);
       }
     }
@@ -35,8 +35,9 @@ export class StatsService {
     stats.totalIssues = user.issues.totalCount;
 
     stats.totalCommits = user.contributionsCollection.totalCommitContributions;
+    const res = await totalCommit_fetcher(token, username);
 
-    stats.totalCommits += await StatsService.totalCommitsFetch(token, username);
+    stats.totalCommits += res.data.total_count;
     stats.totalCommits += user.contributionsCollection.restrictedContributionsCount;
 
     stats.totalPRs = user.pullRequests.totalCount;
@@ -47,11 +48,5 @@ export class StatsService {
       return prev + curr.stargazers.totalCount;
     }, 0);
     return stats;
-  }
-  static async totalCommitsFetch(token, username) {
-    const res = await totalCommit_fetcher(token, username);
-    if (res.data.total_count) {
-      return res.data.total_count;
-    }
   }
 }
