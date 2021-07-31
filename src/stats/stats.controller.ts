@@ -1,11 +1,12 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Get, Param, Scope } from '@nestjs/common';
 import { StatsService } from './stats.service';
+import { TokenManagerService } from '../tokenManager/tokenManager.service';
 
-@Controller('stats')
+@Controller({ path: 'stats', scope: Scope.REQUEST })
 export class StatsController {
-  constructor(private readonly statsService: StatsService) {}
+  constructor(private readonly statsService: StatsService, private readonly tokenManagerService: TokenManagerService) {}
   @Get(':username')
-  statsFecher(@Param('username') username: string) {
-    return this.statsService.statsFetch(process.env.TOKEN, username);
+  async statsFecher(@Param('username') username: string) {
+    return await this.tokenManagerService.githubApiFetcher(username, this.statsService.statsFetch);
   }
 }
