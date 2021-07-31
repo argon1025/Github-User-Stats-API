@@ -88,9 +88,13 @@ export class TokenManagerService {
     if (tokenListLength === this.tokenListScope) {
       //토큰 스코프를 초기화 한다
       this.setTokenScope(0);
+      Logger.log(`TokenScope is Change -> ${this.getTokenScope()}`, 'CHANGE_TOKEN');
+      return true;
     } else {
       // 토큰스코프를 +1 증가시킨다
       this.setTokenScope(this.getTokenScope() + 1);
+      Logger.log(`TokenScope is Change+ -> ${this.getTokenScope()}`, 'CHANGE_TOKEN');
+      return true;
     }
   }
 
@@ -99,17 +103,36 @@ export class TokenManagerService {
     if (!username) {
       throw new HttpException({ code: 'tokenManager.githubApiFetcher.InvalidUsername', message: '올바르지 않은 유저이름 입니다' }, 401);
     }
+    let retryCount: number = 1;
+    // 전체 토큰 리스트 길이 보다 재시도 횟수가 작을경우 반복한다
+    while (this.tokenList.length >= retryCount) {
+      // fetcher 시도
+      try {
+        let TOKEN = this.getToken();
+        const USER_NAME = username;
+        let result = await fetcher(TOKEN, USER_NAME);
 
-    // fetcher 시도
-    try {
-      let TOKEN = this.getToken();
-      const USER_NAME = username;
-      let result = await fetcher(TOKEN, USER_NAME);
+        // 성공했을 경우 데이터 리턴
+        return result;
+      } catch (error) {
+        let ERROR_CODE = error.response.code;
+        let ERROR_MESSAGE = error.response.message;
+        let ERROR_STATUS = error.response.status;
 
-      // 성공했을 경우 데이터 리턴
-      return result;
-    } catch (error) {
-      console.log(error);
+        // 토큰의 접근 가능한 횟수가 초과되었을 경우
+        if (ERROR_STATUS === 403) {
+          // 토큰을 변경한다
+          if (!this.changeToken()) {
+            throw new HttpException({ code: 'tokenManager.githubApiFetcher.changeTokenfail', message: '토큰 변경에 실패했습니다' }, 500);
+          }
+
+          // 재시도 횟수 증가
+          retryCount++;
+        } else {
+          // 발생된 에러를 전달하고 마친다
+          throw new HttpException({ code: ERROR_CODE, message: ERROR_MESSAGE }, ERROR_STATUS);
+        }
+      }
     }
   }
 }
