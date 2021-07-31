@@ -1,5 +1,5 @@
 import { HttpException, Injectable } from '@nestjs/common';
-import { stats_fetcher, totalCommit_fetcher } from 'src/common/utils/axios';
+import { stats_fetcher, totalCommit_fetcher } from 'src/common/utils/stats.axios';
 @Injectable()
 export class StatsService {
   async statsFetch(token, username) {
