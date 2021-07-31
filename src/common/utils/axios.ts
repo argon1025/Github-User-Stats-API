@@ -46,7 +46,6 @@ export function stats_fetcher(token, variables) {
       },
     });
   } catch (error) {
-    // 200으로 출력되는 에러
     if (error.response) {
       throw new HttpException({ code: 'github.UNKOWN', message: error.message }, 400);
     }
