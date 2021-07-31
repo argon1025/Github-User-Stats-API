@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { TopLanguagesService } from './top-languages.service';
 
-@Controller('toplang')
+@Controller('top-lang')
 export class TopLanguagesController {
   constructor(private readonly topLanguagesService: TopLanguagesService) {}
 
