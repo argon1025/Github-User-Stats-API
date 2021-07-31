@@ -110,14 +110,17 @@ export class TokenManagerService {
       try {
         let TOKEN = this.getToken();
         const USER_NAME = username;
+
         let result = await fetcher(TOKEN, USER_NAME);
 
         // 성공했을 경우 데이터 리턴
         return result;
       } catch (error) {
+        console.log(error);
+
         let ERROR_CODE = error.response.code;
         let ERROR_MESSAGE = error.response.message;
-        let ERROR_STATUS = error.response.status;
+        let ERROR_STATUS = error.status;
 
         // 토큰의 접근 가능한 횟수가 초과되었을 경우
         if (ERROR_STATUS === 403) {
