@@ -36,6 +36,9 @@ export function toplanguage_fetcher(token, variables) {
     });
   } catch (error) {
     if (error.response) {
+      if (error.response.status == 401) {
+        throw new HttpException({ code: 'BAD_CREDENTIALS', message: '알수없는 토큰 입니다.' }, 401);
+      }
       throw new HttpException({ code: 'UNKOWN', message: error.message }, 400);
     }
   }

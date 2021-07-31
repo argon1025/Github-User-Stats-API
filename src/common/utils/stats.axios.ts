@@ -11,42 +11,45 @@ export function stats_fetcher(token, variables) {
       },
       data: {
         query: `
-              query userInfo($login: String!) {
-                user(login: $login) {
-                  name
-                  login
-                  contributionsCollection {
-                    totalCommitContributions
-                    restrictedContributionsCount
-                  }
-                  repositoriesContributedTo(first: 1, contributionTypes: [COMMIT, ISSUE, PULL_REQUEST, REPOSITORY]) {
-                    totalCount
-                  }
-                  pullRequests(first: 1) {
-                    totalCount
-                  }
-                  issues(first: 1) {
-                    totalCount
-                  }
-                  followers {
-                    totalCount
-                  }
-                  repositories(first: 100, ownerAffiliations: OWNER, orderBy: {direction: DESC, field: STARGAZERS}) {
-                    totalCount
-                    nodes {
-                      stargazers {
-                        totalCount
+                query userInfo($login: String!) {
+                  user(login: $login) {
+                    name
+                    login
+                    contributionsCollection {
+                      totalCommitContributions
+                      restrictedContributionsCount
+                    }
+                    repositoriesContributedTo(first: 1, contributionTypes: [COMMIT, ISSUE, PULL_REQUEST, REPOSITORY]) {
+                      totalCount
+                    }
+                    pullRequests(first: 1) {
+                      totalCount
+                    }
+                    issues(first: 1) {
+                      totalCount
+                    }
+                    followers {
+                      totalCount
+                    }
+                    repositories(first: 100, ownerAffiliations: OWNER, orderBy: {direction: DESC, field: STARGAZERS}) {
+                      totalCount
+                      nodes {
+                        stargazers {
+                          totalCount
+                        }
                       }
                     }
                   }
                 }
-              }
-              `,
+                `,
         variables,
       },
     });
   } catch (error) {
     if (error.response) {
+      if (error.response.status == 401) {
+        throw new HttpException({ code: 'BAD_CREDENTIALS', message: '알수없는 토큰 입니다.' }, 401);
+      }
       throw new HttpException({ code: 'UNKOWN', message: error.message }, 400);
     }
   }
