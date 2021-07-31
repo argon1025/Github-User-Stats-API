@@ -6,6 +6,7 @@ import { LoggerMiddleware } from './middlewares/Logger.middleware';
 import { ConfigModule } from '@nestjs/config';
 import { StatsModule } from './stats/stats.module';
 import { RepoModule } from './repo/repo.module';
+import { TopLanguagesModule } from './top-languages/top-languages.module';
 
 // Load ENV
 const ENV = process.env;
@@ -18,6 +19,7 @@ const ENV = process.env;
     }),
     StatsModule,
     RepoModule,
+    TopLanguagesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
