@@ -6,6 +6,9 @@ import { LoggerMiddleware } from './middlewares/Logger.middleware';
 import { ConfigModule } from '@nestjs/config';
 import { StatsModule } from './stats/stats.module';
 import { TokenManagerModule } from './tokenManager/toeknManager.module';
+import { RepoModule } from './repo/repo.module';
+import { TopLanguagesModule } from './top-languages/top-languages.module';
+import { PinnedRepoModule } from './pinned-repo/pinned-repo.module';
 
 // Load ENV
 const ENV = process.env;
@@ -18,6 +21,9 @@ const ENV = process.env;
     }),
     StatsModule,
     TokenManagerModule,
+    RepoModule,
+    TopLanguagesModule,
+    PinnedRepoModule,
   ],
   controllers: [AppController],
   providers: [AppService],
