@@ -5,6 +5,7 @@ import { AppService } from './app.service';
 import { LoggerMiddleware } from './middlewares/Logger.middleware';
 import { ConfigModule } from '@nestjs/config';
 import { StatsModule } from './stats/stats.module';
+import { TokenManagerModule } from './tokenManager/toeknManager.module';
 
 // Load ENV
 const ENV = process.env;
@@ -16,6 +17,7 @@ const ENV = process.env;
       envFilePath: !ENV.NODE_ENV ? '.env' : `.env.${ENV.NODE_ENV}`,
     }),
     StatsModule,
+    TokenManagerModule,
   ],
   controllers: [AppController],
   providers: [AppService],
