@@ -1,9 +1,9 @@
 import { HttpException } from '@nestjs/common';
 import axios from 'axios';
 
-export function pinnedRepo_fetcher(token, variables) {
+export async function repoResponse(token, variables) {
   try {
-    return axios({
+    return await axios({
       url: 'https://api.github.com/graphql',
       method: 'post',
       headers: {
@@ -11,36 +11,35 @@ export function pinnedRepo_fetcher(token, variables) {
       },
       data: {
         query: `
-        fragment RepoInfo on Repository {
-            id
+          fragment RepoInfo on Repository {
             name
             nameWithOwner
             isPrivate
             isArchived
             isTemplate
             stargazers {
-                totalCount
+              totalCount
             }
             description
             primaryLanguage {
-                color
-                id
-                name
+              color
+              id
+              name
             }
             forkCount
-        }
-        
-        query PinnedRepo($login: String!) {
-            user(login: $login){
-                pinnedItems(first: 6, types: REPOSITORY){
-                    nodes {
-                        ... on Repository {
-                            ... RepoInfo
-                        }
-                    }
-                }
+          }
+          query getRepo($login: String!, $repo: String!) {
+            user(login: $login) {
+              repository(name: $repo) {
+                ...RepoInfo
+              }
             }
-        }
+            organization(login: $login) {
+              repository(name: $repo) {
+                ...RepoInfo
+              }
+            }
+          }
         `,
         variables,
       },
@@ -48,7 +47,7 @@ export function pinnedRepo_fetcher(token, variables) {
   } catch (error) {
     if (error.response) {
       if (error.response.status == 401) {
-        throw new HttpException({ code: 'BAD_CREDENTIALS', message: '알수없는 토큰 입니다.' }, 401);
+        throw new HttpException({ code: 'BAD_CREDENTIALS', message: `${token} - 토큰은 만료가 되었거나, 사용할 수 없는 토큰입니다.` }, 401);
       }
       throw new HttpException({ code: 'UNKOWN', message: error.message }, 400);
     }
