@@ -15,8 +15,8 @@ export class StatsController {
     required: true,
     description: 'Github UserName',
   })
-  async statsFecher(@Param('username') username: string) {
-    return await this.tokenManagerService.githubApiFetcher(username, this.statsService.statsFetch);
+  statsFecher(@Param('username') username: string) {
+    return this.tokenManagerService.githubApiFetcher(username, this.statsService.statsFetch);
   }
 
   @Get(':username/top-language')

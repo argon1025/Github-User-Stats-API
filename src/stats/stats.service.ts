@@ -1,6 +1,7 @@
 import { HttpException, Injectable } from '@nestjs/common';
-import { stats_fetcher, totalCommit_fetcher } from 'src/Common/utils/stats.axios';
-import { toplanguage_fetcher } from 'src/Common/utils/topLanguage.axios';
+import { toplanguageResponse } from 'src/common/utils/axios/stats/toplanguageResponse';
+import { totalCommitResponse } from 'src/common/utils/axios/stats/totalCommitResponse';
+import { usersStatsResponse } from 'src/common/utils/axios/stats/usersStatsResponse';
 
 @Injectable()
 export class StatsService {
@@ -12,9 +13,8 @@ export class StatsService {
       totalIssues: 0,
       totalStars: 0,
       contributedTo: 0,
-      //   rank: { level: 'C', score: 0 },
     };
-    const result = await stats_fetcher(token, { login: username });
+    const response = await usersStatsResponse(token, { login: username });
     // const test_error = {
     //   errors: [
     //     {
@@ -23,21 +23,22 @@ export class StatsService {
     //     },
     //   ],
     // };
-    if (!!result.data.errors) {
-      if (result.data.errors[0].type == 'RATE_LIMITED') {
+    const data = response.data.data;
+    if (!!response.data.errors) {
+      if (response.data.errors[0].type == 'RATE_LIMITED') {
         throw new HttpException({ code: 'RATE_LIMITED', message: '해당토큰의 접근 가능한 횟수가 초과되었습니다.' }, 403);
       }
     }
-    if (result.data.data.user == null) {
+    if (data.user == null) {
       throw new HttpException({ code: 'NOT_FOUND_USER', message: '해당 유저는 존재하지 않습니다.' }, 404);
     }
-    const user = result.data.data.user;
+    const user = data.user;
     stats.name = user.name || user.login;
 
     stats.totalIssues = user.issues.totalCount;
 
     stats.totalCommits = user.contributionsCollection.totalCommitContributions;
-    const res = await totalCommit_fetcher(token, username);
+    const res = await totalCommitResponse(token, username);
 
     stats.totalCommits += res.data.total_count;
     stats.totalCommits += user.contributionsCollection.restrictedContributionsCount;
@@ -52,16 +53,17 @@ export class StatsService {
     return stats;
   }
   async topLanguageFetch(token, username) {
-    const result = await toplanguage_fetcher(token, { login: username });
-    if (!!result.data.errors) {
-      if (result.data.errors[0].type == 'RATE_LIMITED') {
+    const response = await toplanguageResponse(token, { login: username });
+    const data = response.data.data;
+    if (!!response.data.errors) {
+      if (response.data.errors[0].type == 'RATE_LIMITED') {
         throw new HttpException({ code: 'RATE_LIMITED', message: '해당토큰의 접근 가능한 횟수가 초과되었습니다.' }, 403);
       }
     }
-    if (result.data.data.user == null) {
+    if (data.user == null) {
       throw new HttpException({ code: 'NOTFOUNDUSER', message: '해당 유저는 존재하지 않습니다.' }, 404);
     }
-    let repoNodes = result.data.data.user.repositories.nodes;
+    let repoNodes = data.user.repositories.nodes;
     let repoToHide = {};
     // filter out repositories to be hidden
     repoNodes = repoNodes
@@ -74,15 +76,9 @@ export class StatsService {
       .filter((node) => {
         return node.languages.edges.length > 0;
       })
-      // flatten the list of language nodes
       .reduce((acc, curr) => curr.languages.edges.concat(acc), [])
       .reduce((acc, prev) => {
-        // get the size of the language (bytes)
         let langSize = prev.size;
-
-        // if we already have the language in the accumulator
-        // & the current language name is same as previous name
-        // add the size to the language size.
         if (acc[prev.node.name] && prev.node.name === acc[prev.node.name].name) {
           langSize = prev.size + acc[prev.node.name].size;
         }
