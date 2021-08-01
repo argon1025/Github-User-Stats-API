@@ -3,9 +3,15 @@ import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
 import { Logger } from '@nestjs/common';
 import { HttpExceptionFilter } from './ExceptionFilters/HttpException.filter';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, { cors: true });
+
+  //Swagger
+  const config = new DocumentBuilder().setTitle('Github State API').setDescription('Unlimited open API for github User Stats').setVersion('1.0').build();
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api-document', app, document);
 
   // Configuration Load
   const configService = app.get<ConfigService>(ConfigService);
