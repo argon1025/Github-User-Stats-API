@@ -1,38 +1,19 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
+import { ApiOperation, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { TokenManagerService } from 'src/tokenManager/tokenManager.service';
 import { RepoService } from './repo.service';
 
-@Controller('repositories')
+@Controller('repo')
 export class RepoController {
   constructor(private readonly repoService: RepoService, private readonly tokenManagerService: TokenManagerService) {}
 
-  @Get(':reponame/user/:username')
-  @ApiTags('repositories')
-  @ApiOperation({ summary: 'Request Repositories data' })
-  @ApiParam({
-    name: 'reponame',
-    type: 'string',
-    required: true,
-    description: 'Github User repositories Name',
-  })
-  @ApiParam({
-    name: 'username',
-    type: 'string',
-    required: true,
-    description: 'Github UserName',
-  })
-  repoFetch(@Param('reponame') reponame, @Param('username') username) {
-    return this.tokenManagerService.githubApiFetcher(username, this.repoService.repoFetch, reponame);
-  }
-
   @Get(':username')
   @ApiTags('repositories')
-  @ApiOperation({ summary: 'Request All Repositories data' })
-  @ApiParam({
+  @ApiOperation({ summary: 'Request Repositories data' })
+  @ApiQuery({
     name: 'reponame',
     type: 'string',
-    required: true,
+    required: false,
     description: 'Github User repositories Name',
   })
   @ApiParam({
@@ -41,7 +22,10 @@ export class RepoController {
     required: true,
     description: 'Github UserName',
   })
-  allrepoFetch(@Param('reponame') reponame, @Param('username') username) {
+  repoFetch(@Query('reponame') reponame, @Param('username') username) {
+    // reponame query가 존재할 경우
+    if (!!reponame) return this.tokenManagerService.githubApiFetcher(username, this.repoService.repoFetch, reponame);
+    // 존재하지 않을 경우 유저의 전체 레포를 뽑아옵니다.
     return this.tokenManagerService.githubApiFetcher(username, this.repoService.allrepoFetch);
   }
 
@@ -54,7 +38,9 @@ export class RepoController {
     required: true,
     description: 'Github UserName',
   })
-  PinnedRepoFetch(@Param('username') username: string) {
-    return this.tokenManagerService.githubApiFetcher(username, this.repoService.PinnedRepoFetch);
+  pinnedRepoFetch(@Param('username') username: string) {
+    console.log(username);
+
+    return this.tokenManagerService.githubApiFetcher(username, this.repoService.pinnedRepoFetch);
   }
 }
