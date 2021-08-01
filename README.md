@@ -2,7 +2,7 @@
   <img src="https://user-images.githubusercontent.com/55491354/127771279-28aba28e-f578-444c-b2e7-a54bbd852556.png" alt="stats" height="100" width="100"><br>
   <b>Github User Stats API</b><br>
   <a href="https://github.com/argon1025/Github-User-Stats-API/issues">💣Issue</a> |
-  <a href="# EndPoint">📚EndPoint Document</a> |
+  <a href="https://github.com/argon1025/Github-User-Stats-API#endpoint">📚EndPoint Document</a> |
   <a href="https://github.com/argon1025/TILog-server">🌌TILog Blog Project</a>
   <br><br>
 </p>
