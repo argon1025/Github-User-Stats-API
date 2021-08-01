@@ -120,7 +120,9 @@ export class TokenManagerService {
         // 성공했을 경우 데이터 리턴
         return result;
       } catch (error) {
+        console.log('++++++++++++++++++++++++++++++++++++++');
         console.log(error);
+        console.log('++++++++++++++++++++++++++++++++++++++');
 
         let ERROR_CODE = error.response.code;
         let ERROR_MESSAGE = error.response.message;
