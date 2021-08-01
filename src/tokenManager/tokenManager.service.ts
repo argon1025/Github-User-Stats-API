@@ -98,7 +98,7 @@ export class TokenManagerService {
     }
   }
 
-  async githubApiFetcher(username: string, fetcher: any, option?:any) {
+  async githubApiFetcher(username: string, fetcher: any, option?: any) {
     // 유저 이름이 올바르지 않을 경우
     if (!username) {
       throw new HttpException({ code: 'tokenManager.githubApiFetcher.InvalidUsername', message: '올바르지 않은 유저이름 입니다' }, 401);
@@ -111,9 +111,9 @@ export class TokenManagerService {
         let TOKEN = this.getToken();
         const USER_NAME = username;
         let result;
-        if(!!option){
+        if (!!option) {
           result = await fetcher(TOKEN, USER_NAME);
-        }else{
+        } else {
           result = await fetcher(TOKEN, USER_NAME, option);
         }
 
@@ -141,5 +141,6 @@ export class TokenManagerService {
         }
       }
     }
+    throw new HttpException({ code: 'tokenManager.githubApiFetcher.RATE_LIMITED', message: '서비스 제공가능한 토큰이 모두 소진되었습니다' }, 500);
   }
 }
