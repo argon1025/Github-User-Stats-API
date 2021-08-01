@@ -112,9 +112,9 @@ export class TokenManagerService {
         const USER_NAME = username;
         let result;
         if (!!option) {
-          result = await fetcher(TOKEN, USER_NAME);
-        } else {
           result = await fetcher(TOKEN, USER_NAME, option);
+        } else {
+          result = await fetcher(TOKEN, USER_NAME);
         }
 
         // 성공했을 경우 데이터 리턴
