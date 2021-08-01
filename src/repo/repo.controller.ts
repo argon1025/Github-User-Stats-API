@@ -8,7 +8,7 @@ export class RepoController {
 
   @Get(':reponame/user/:username')
   repoFetch(@Param('reponame') reponame, @Param('username') username) {
-    return this.tokenManagerService.githubApiFetcher(reponame, username);
+    return this.tokenManagerService.githubApiFetcher(username, this.repoService.repoFetch, reponame);
   }
 
   @Get(':username')

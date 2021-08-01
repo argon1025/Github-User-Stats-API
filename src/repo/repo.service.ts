@@ -3,7 +3,7 @@ import { all_repo_fetcher, repo_fetcher } from 'src/common/utils/repo.axios';
 
 @Injectable()
 export class RepoService {
-  async repoFetch(token, reponame, username) {
+  async repoFetch(token, username, reponame) {
     const result = await repo_fetcher(token, { login: username, repo: reponame });
     const data = result.data.data;
     console.log(result.data.errors);
