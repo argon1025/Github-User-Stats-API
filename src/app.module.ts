@@ -7,6 +7,7 @@ import { ConfigModule } from '@nestjs/config';
 import { StatsModule } from './stats/stats.module';
 import { TokenManagerModule } from './tokenManager/toeknManager.module';
 import { RepoModule } from './repo/repo.module';
+import { UsersModule } from './users/users.module';
 
 // Load ENV
 const ENV = process.env;
@@ -20,6 +21,7 @@ const ENV = process.env;
     StatsModule,
     TokenManagerModule,
     RepoModule,
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService],

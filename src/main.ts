@@ -11,7 +11,7 @@ async function bootstrap() {
   //Swagger
   const config = new DocumentBuilder().setTitle('Github State API').setDescription('Unlimited open API for github User Stats').setVersion('1.0').build();
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api-document', app, document);
+  SwaggerModule.setup('api', app, document);
 
   // Configuration Load
   const configService = app.get<ConfigService>(ConfigService);

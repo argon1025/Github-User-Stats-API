@@ -64,6 +64,7 @@ export class StatsService {
       throw new HttpException({ code: 'NOTFOUNDUSER', message: '해당 유저는 존재하지 않습니다.' }, 404);
     }
     let repoNodes = data.user.repositories.nodes;
+    let totalSize = 0;
     let repoToHide = {};
     // filter out repositories to be hidden
     repoNodes = repoNodes
@@ -92,8 +93,9 @@ export class StatsService {
         };
       }, {});
 
-    const topLangs = Object.keys(repoNodes)
+    let topLangs = Object.keys(repoNodes)
       .sort((a, b) => repoNodes[b].size - repoNodes[a].size)
+      .slice(0, 5)
       .reduce((result, key) => {
         result[key] = repoNodes[key];
         return result;
