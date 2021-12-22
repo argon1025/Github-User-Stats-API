@@ -34,8 +34,8 @@ jobs:
           name: 'Create .env file'
           command: |
             ./.circleci/scripts/generate-env-files.sh
-            ls -al src
-            cat src/.env
+            ls -al
+            cat .env
       - persist_to_workspace:
           root: .
           paths:
