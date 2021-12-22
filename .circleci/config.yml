@@ -82,7 +82,7 @@ workflows:
           # 서비스 리전
           region: AWS_DEFAULT_REGION
           # 레포지토리 명
-          repo: '${AWS_ECR_NAME_STATS_BACKEND}'
+          repo: '${AWS_ECR_NAME}'
           # 이미지 태그
           tag: '$CIRCLE_SHA1'
           requires:
@@ -95,13 +95,13 @@ workflows:
       # 작업 조건 : 상위 aws-ecr/build-and-push-image 작업 종료, release 브랜치 커밋
       - aws-ecs/deploy-service-update:
           # container:tag
-          container-image-name-updates: 'container=${AWS_ECR_NAME_STATS_BACKEND},tag=${CIRCLE_SHA1}'
+          container-image-name-updates: 'container=${AWS_ECR_NAME},tag=${CIRCLE_SHA1}'
           # ECS cluster
           cluster-name: 'Tilog-ECS-Cluster'
           # service name
-          service-name: '${AWS_ECR_NAME_STATS_BACKEND}-service'
+          service-name: '${AWS_ECR_NAME}-service'
           # task definition
-          family: '${AWS_ECR_NAME_STATS_BACKEND}'
+          family: '${AWS_ECR_NAME}'
           requires:
             - aws-ecr/build-and-push-image
           filters:
