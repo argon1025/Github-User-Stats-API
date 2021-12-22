@@ -15,9 +15,9 @@ async function bootstrap() {
 
   // Configuration Load
   const configService = app.get<ConfigService>(ConfigService);
-  const SERVER_PORT = configService.get<number>('SERVER_PORT', null);
-  const SERVER_ENV = configService.get<string>('NODE_ENV', null);
-  const SERVER_HOST = configService.get<string>('SERVER_HOST', 'null');
+  const SERVER_PORT = configService.get<number>('SERVER_PORT', 80);
+  const SERVER_ENV = configService.get<string>('NODE_ENV', 'prod');
+  const SERVER_HOST = configService.get<string>('SERVER_HOST', 'localhost');
 
   // ExceptionFilter
   app.useGlobalFilters(new HttpExceptionFilter());
