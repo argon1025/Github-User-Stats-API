@@ -18,6 +18,9 @@
   </p>
 </div>
 
+# Project Status
+Last Release Build : [![CircleCI](https://circleci.com/gh/argon1025/Github-User-Stats-API/tree/release.svg?style=svg)](https://circleci.com/gh/argon1025/Github-User-Stats-API/tree/release)
+
 # how It works?
 Since the GitHub API only allows 5k requests per hour,  
 This Project Uses multiple tokens to bypass the Github requests limit.
