@@ -8,6 +8,7 @@ import { StatsModule } from './stats/stats.module';
 import { TokenManagerModule } from './tokenManager/toeknManager.module';
 import { RepoModule } from './repo/repo.module';
 import { UsersModule } from './users/users.module';
+import { GithubStatsModule } from './github-stats/github-stats.module';
 
 // Load ENV
 const ENV = process.env;
@@ -22,6 +23,7 @@ const ENV = process.env;
     TokenManagerModule,
     RepoModule,
     UsersModule,
+    GithubStatsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
