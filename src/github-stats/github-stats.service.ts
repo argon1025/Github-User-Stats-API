@@ -1,21 +1,58 @@
 import { Injectable } from '@nestjs/common';
-import { UpdateGithubStatDto } from './dto/update-github-stat.dto';
+import { lastValueFrom, map } from 'rxjs';
+import { HttpService } from '@nestjs/axios';
 @Injectable()
 export class GithubStatsService {
-  constructor() {}
-  findAll() {
-    return `This action returns all githubStats`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} githubStat`;
-  }
-
-  update(id: number, updateGithubStatDto: UpdateGithubStatDto) {
-    return `This action updates a #${id} githubStat`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} githubStat`;
-  }
+  constructor(private readonly httpService: HttpService) {}
+  getUsersStats = async (token, username) => {
+    return lastValueFrom(
+      this.httpService
+        .post(
+          'https://api.github.com/graphql',
+          {
+            query: `
+                  query userInfo($login: String!) {
+                    user(login: $login) {
+                      name
+                      login
+                      contributionsCollection {
+                        totalCommitContributions
+                        restrictedContributionsCount
+                      }
+                      repositoriesContributedTo(first: 1, contributionTypes: [COMMIT, ISSUE, PULL_REQUEST, REPOSITORY]) {
+                        totalCount
+                      }
+                      pullRequests(first: 1) {
+                        totalCount
+                      }
+                      issues(first: 1) {
+                        totalCount
+                      }
+                      followers {
+                        totalCount
+                      }
+                      repositories(first: 100, ownerAffiliations: OWNER, orderBy: {direction: DESC, field: STARGAZERS}) {
+                        totalCount
+                        nodes {
+                          stargazers {
+                            totalCount
+                          }
+                        }
+                      }
+                    }
+                  }
+                  `,
+            variables: {
+              login: username,
+            },
+          },
+          {
+            headers: {
+              Authorization: `bearer ${token}`,
+            },
+          },
+        )
+        .pipe(map((res) => res.data)),
+    );
+  };
 }
