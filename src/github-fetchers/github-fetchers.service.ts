@@ -2,9 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { lastValueFrom, map } from 'rxjs';
 import { HttpService } from '@nestjs/axios';
 @Injectable()
-export class GithubStatsService {
+export class GithubFetchersService {
   constructor(private readonly httpService: HttpService) {}
-  getUsersStats = async (token, username) => {
+  UsersStatsFetcher = async (token, username) => {
     return lastValueFrom(
       this.httpService
         .post(

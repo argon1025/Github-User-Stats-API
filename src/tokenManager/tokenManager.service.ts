@@ -98,7 +98,7 @@ export class TokenManagerService {
     }
   }
 
-  async githubApiFetcher(username: string, fetcher: any, option?: any) {
+  async githubTokenSupplier(username: string, fetcher: any, option?: any) {
     // 유저 이름이 올바르지 않을 경우
     if (!username) {
       throw new HttpException({ code: 'tokenManager.githubApiFetcher.InvalidUsername', message: '올바르지 않은 유저이름 입니다' }, 401);

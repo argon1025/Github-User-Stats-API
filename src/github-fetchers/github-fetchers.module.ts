@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
-import { GithubStatsService } from './github-stats.service';
+import { GithubFetchersService } from './github-fetchers.service';
 import { HttpModule } from '@nestjs/axios';
 
 @Module({
   imports: [HttpModule],
-  providers: [GithubStatsService],
+  providers: [GithubFetchersService],
 })
 export class GithubStatsModule {}
