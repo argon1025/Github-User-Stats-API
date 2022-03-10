@@ -16,7 +16,7 @@ export class UsersController {
     description: 'Github UserName',
   })
   weeklystats(@Param('username') username: string) {
-    return this.tokenManagerService.githubApiFetcher(username, this.usersService.weeklyStats);
+    // return this.tokenManagerService.githubApiFetcher(username, this.usersService.weeklyStats);
   }
 
   @Get(':username/events/page/:page')
@@ -34,6 +34,6 @@ export class UsersController {
     description: 'page',
   })
   allEvents(@Param('username') username: string, @Param('page') page: string) {
-    return this.tokenManagerService.githubApiFetcher(username, this.usersService.allEvents, page);
+    // return this.tokenManagerService.githubApiFetcher(username, this.usersService.allEvents, page);
   }
 }

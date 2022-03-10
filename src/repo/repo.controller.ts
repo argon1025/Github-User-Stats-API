@@ -24,9 +24,9 @@ export class RepoController {
   })
   repoFetch(@Query('reponame') reponame, @Param('username') username) {
     // reponame query가 존재할 경우
-    if (!!reponame) return this.tokenManagerService.githubApiFetcher(username, this.repoService.repoFetch, reponame);
+    // if (!!reponame) return this.tokenManagerService.githubApiFetcher(username, this.repoService.repoFetch, reponame);
     // 존재하지 않을 경우 유저의 전체 레포를 뽑아옵니다.
-    return this.tokenManagerService.githubApiFetcher(username, this.repoService.allrepoFetch);
+    // return this.tokenManagerService.githubApiFetcher(username, this.repoService.allrepoFetch);
   }
 
   @Get(':username/pinned-repositories')
@@ -41,6 +41,6 @@ export class RepoController {
   pinnedRepoFetch(@Param('username') username: string) {
     console.log(username);
 
-    return this.tokenManagerService.githubApiFetcher(username, this.repoService.pinnedRepoFetch);
+    // return this.tokenManagerService.githubApiFetcher(username, this.repoService.pinnedRepoFetch);
   }
 }
