@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { lastValueFrom, map } from 'rxjs';
+import { async, lastValueFrom, map } from 'rxjs';
 import { HttpService } from '@nestjs/axios';
 @Injectable()
 export class GithubFetchersService {
   constructor(private readonly httpService: HttpService) {}
-  UsersStatsFetcher = async (token, username) => {
+  usersStatsFetcher = async (token, username) => {
     return lastValueFrom(
       this.httpService
         .post(
@@ -54,5 +54,8 @@ export class GithubFetchersService {
         )
         .pipe(map((res) => res.data)),
     );
+  };
+  totalCommentFetcher = async (token, username) => {
+    return lastValueFrom(this.httpService.get(`https://api.github.com/search/commits?q=author:${username}`, { headers: { Authorization: `bearer ${token}` } }).pipe(map((res) => res.data)));
   };
 }
