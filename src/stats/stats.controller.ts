@@ -1,12 +1,11 @@
 import { Controller, Get, Param, Scope } from '@nestjs/common';
 import { StatsService } from './stats.service';
-import { TokenManagerService } from '../tokenManager/tokenManager.service';
 import { ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
 
 @Controller({ path: 'stats', scope: Scope.REQUEST })
 @ApiTags('UserStats')
 export class StatsController {
-  constructor(private readonly statsService: StatsService, private readonly tokenManagerService: TokenManagerService) {}
+  constructor(private readonly statsService: StatsService) {}
 
   @Get(':username')
   @ApiOperation({ summary: 'Request User Stats data' })

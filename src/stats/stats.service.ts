@@ -50,7 +50,9 @@ export class StatsService {
         login: username,
       },
     });
-    const totalCommentResponse = await this.githubFetchersService.getRequest(`https://api.github.com/search/commits`, username);
+    const totalCommentResponse = await this.githubFetchersService.getRequest(`https://api.github.com/search/commits`, {
+      q: `author:${username}`,
+    });
     const userInfo = userStatsResponse.data.user;
     // name
     stats.name = userInfo.name || userInfo.login;
