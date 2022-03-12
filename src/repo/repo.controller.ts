@@ -1,11 +1,10 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
+import { Controller, Get, Param, Query } from '@nestjs/common';
 import { ApiOperation, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
-import { TokenManagerService } from 'src/tokenManager/tokenManager.service';
 import { RepoService } from './repo.service';
 
 @Controller('repo')
 export class RepoController {
-  constructor(private readonly repoService: RepoService, private readonly tokenManagerService: TokenManagerService) {}
+  constructor(private readonly repoService: RepoService) {}
 
   @Get(':username')
   @ApiTags('repositories')
@@ -22,11 +21,9 @@ export class RepoController {
     required: true,
     description: 'Github UserName',
   })
-  repoFetch(@Query('reponame') reponame, @Param('username') username) {
-    // reponame query가 존재할 경우
-    // if (!!reponame) return this.tokenManagerService.githubApiFetcher(username, this.repoService.repoFetch, reponame);
-    // 존재하지 않을 경우 유저의 전체 레포를 뽑아옵니다.
-    // return this.tokenManagerService.githubApiFetcher(username, this.repoService.allrepoFetch);
+  repo(@Query('reponame') reponame, @Param('username') username) {
+    if (!reponame) return this.repoService.allRepos(username);
+    return this.repoService.repo(username, reponame);
   }
 
   @Get(':username/pinned-repositories')
@@ -38,9 +35,7 @@ export class RepoController {
     required: true,
     description: 'Github UserName',
   })
-  pinnedRepoFetch(@Param('username') username: string) {
-    console.log(username);
-
-    // return this.tokenManagerService.githubApiFetcher(username, this.repoService.pinnedRepoFetch);
+  pinnedRepo(@Param('username') username: string) {
+    return this.repoService.pinnedRepo(username);
   }
 }
