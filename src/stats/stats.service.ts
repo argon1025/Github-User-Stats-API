@@ -1,11 +1,9 @@
-import { HttpException, Injectable } from '@nestjs/common';
-import { toplanguageResponse } from 'src/common/utils/axios/stats/toplanguageResponse';
+import { Injectable } from '@nestjs/common';
 import { GithubFetchersService } from 'src/github-fetchers/github-fetchers.service';
-import { TokenManagerService } from 'src/tokenManager/tokenManager.service';
 
 @Injectable()
 export class StatsService {
-  constructor(private readonly tokenManagerService: TokenManagerService, private readonly githubFetchersService: GithubFetchersService) {}
+  constructor(private readonly githubFetchersService: GithubFetchersService) {}
   async userStats(username) {
     const stats = {
       name: '',
@@ -15,9 +13,44 @@ export class StatsService {
       totalStars: 0,
       contributedTo: 0,
     };
-
-    const userStatsResponse = await this.tokenManagerService.githubTokenSupplier(username, this.githubFetchersService.usersStatsFetcher);
-    const totalCommentResponse = await this.tokenManagerService.githubTokenSupplier(username, this.githubFetchersService.totalCommentFetcher);
+    const userStatsResponse = await this.githubFetchersService.postRequest({
+      query: `
+              query userInfo($login: String!) {
+                user(login: $login) {
+                  name
+                  login
+                  contributionsCollection {
+                    totalCommitContributions
+                    restrictedContributionsCount
+                  }
+                  repositoriesContributedTo(first: 1, contributionTypes: [COMMIT, ISSUE, PULL_REQUEST, REPOSITORY]) {
+                    totalCount
+                  }
+                  pullRequests(first: 1) {
+                    totalCount
+                  }
+                  issues(first: 1) {
+                    totalCount
+                  }
+                  followers {
+                    totalCount
+                  }
+                  repositories(first: 100, ownerAffiliations: OWNER, orderBy: {direction: DESC, field: STARGAZERS}) {
+                    totalCount
+                    nodes {
+                      stargazers {
+                        totalCount
+                      }
+                    }
+                  }
+                }
+              }
+              `,
+      variables: {
+        login: username,
+      },
+    });
+    const totalCommentResponse = await this.githubFetchersService.getRequest(`https://api.github.com/search/commits`, username);
     const userInfo = userStatsResponse.data.user;
     // name
     stats.name = userInfo.name || userInfo.login;
@@ -37,18 +70,35 @@ export class StatsService {
     }, 0);
     return stats;
   }
-  async topLanguageFetch(token, username) {
-    const response = await toplanguageResponse(token, { login: username });
-    const data = response.data.data;
-    if (!!response.data.errors) {
-      if (response.data.errors[0].type == 'RATE_LIMITED') {
-        throw new HttpException({ code: 'RATE_LIMITED', message: '해당토큰의 접근 가능한 횟수가 초과되었습니다.' }, 403);
+  async topLanguage(username) {
+    const topLanguageResponse = await this.githubFetchersService.postRequest({
+      query: `
+      query userInfo($login: String!) {
+        user(login: $login) {
+          # fetch only owner repos & not forks
+          repositories(ownerAffiliations: OWNER, isFork: false, first: 100) {
+            nodes {
+              name
+              languages(first: 10, orderBy: {field: SIZE, direction: DESC}) {
+                edges {
+                  size
+                  node {
+                    color
+                    name
+                  }
+                }
+              }
+            }
+          }
+        }
       }
-    }
-    if (data.user == null) {
-      throw new HttpException({ code: 'NOTFOUNDUSER', message: '해당 유저는 존재하지 않습니다.' }, 404);
-    }
-    let repoNodes = data.user.repositories.nodes;
+      `,
+      variables: {
+        login: username,
+      },
+    });
+
+    let repoNodes = topLanguageResponse.data.user.repositories.nodes;
     let totalSize = 0;
     let repoToHide = {};
     // filter out repositories to be hidden

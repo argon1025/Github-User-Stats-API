@@ -2,14 +2,11 @@ import { Controller, Get, Param, Scope } from '@nestjs/common';
 import { StatsService } from './stats.service';
 import { TokenManagerService } from '../tokenManager/tokenManager.service';
 import { ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
-import { HttpService } from '@nestjs/axios';
-import { map } from 'rxjs';
-import { GithubFetchersService } from 'src/github-fetchers/github-fetchers.service';
 
 @Controller({ path: 'stats', scope: Scope.REQUEST })
 @ApiTags('UserStats')
 export class StatsController {
-  constructor(private readonly statsService: StatsService) {}
+  constructor(private readonly statsService: StatsService, private readonly tokenManagerService: TokenManagerService) {}
 
   @Get(':username')
   @ApiOperation({ summary: 'Request User Stats data' })
@@ -32,6 +29,6 @@ export class StatsController {
     description: 'Github UserName',
   })
   topLanguageFetch(@Param('username') username: string) {
-    // return this.tokenManagerService.githubApiFetcher(username, this.statsService.topLanguageFetch);
+    return this.statsService.topLanguage(username);
   }
 }
