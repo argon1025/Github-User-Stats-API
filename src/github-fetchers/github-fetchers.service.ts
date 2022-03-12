@@ -1,61 +1,47 @@
-import { Injectable } from '@nestjs/common';
-import { async, lastValueFrom, map } from 'rxjs';
+import { HttpException, Injectable } from '@nestjs/common';
+import { async, catchError, lastValueFrom, map } from 'rxjs';
 import { HttpService } from '@nestjs/axios';
+import { TokenManagerService } from 'src/tokenManager/tokenManager.service';
+import { AxiosRequestConfig } from 'axios';
 @Injectable()
 export class GithubFetchersService {
-  constructor(private readonly httpService: HttpService) {}
-  usersStatsFetcher = async (token, username) => {
-    return lastValueFrom(
-      this.httpService
-        .post(
-          'https://api.github.com/graphql',
-          {
-            query: `
-                  query userInfo($login: String!) {
-                    user(login: $login) {
-                      name
-                      login
-                      contributionsCollection {
-                        totalCommitContributions
-                        restrictedContributionsCount
-                      }
-                      repositoriesContributedTo(first: 1, contributionTypes: [COMMIT, ISSUE, PULL_REQUEST, REPOSITORY]) {
-                        totalCount
-                      }
-                      pullRequests(first: 1) {
-                        totalCount
-                      }
-                      issues(first: 1) {
-                        totalCount
-                      }
-                      followers {
-                        totalCount
-                      }
-                      repositories(first: 100, ownerAffiliations: OWNER, orderBy: {direction: DESC, field: STARGAZERS}) {
-                        totalCount
-                        nodes {
-                          stargazers {
-                            totalCount
-                          }
-                        }
-                      }
-                    }
-                  }
-                  `,
-            variables: {
-              login: username,
-            },
+  constructor(private readonly tokenManagerService: TokenManagerService, private readonly httpService: HttpService) {}
+  postRequest = async (query) => {
+    const url = 'https://api.github.com/graphql';
+    while (this.tokenManagerService.tokenLength > this.tokenManagerService.tryCount) {
+      try {
+        const config = {
+          headers: {
+            Authorization: `bearer ${this.tokenManagerService.getToken()}`,
           },
-          {
-            headers: {
-              Authorization: `bearer ${token}`,
-            },
-          },
-        )
-        .pipe(map((res) => res.data)),
-    );
+        };
+        const result = await lastValueFrom(this.httpService.post(url, query, config).pipe(map((res) => res.data)));
+        return result;
+      } catch (error) {
+        const isBadCredentials = error.response.status === 401;
+        if (isBadCredentials) this.tokenManagerService.changeToken();
+      }
+    }
   };
-  totalCommentFetcher = async (token, username) => {
-    return lastValueFrom(this.httpService.get(`https://api.github.com/search/commits?q=author:${username}`, { headers: { Authorization: `bearer ${token}` } }).pipe(map((res) => res.data)));
+  getRequest = async (url, username) => {
+    while (this.tokenManagerService.tokenLength > this.tokenManagerService.tryCount) {
+      console.log(this.tokenManagerService.getToken());
+      try {
+        const config: AxiosRequestConfig = {
+          params: {
+            q: `author:${username}`,
+          },
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `bearer ${this.tokenManagerService.getToken()}`,
+          },
+        };
+        const result = await lastValueFrom(this.httpService.get(url, config).pipe(map((res) => res.data)));
+        return result;
+      } catch (error) {
+        const isBadCredentials = error.response.status === 401;
+        if (isBadCredentials) this.tokenManagerService.changeToken();
+      }
+    }
   };
 }
