@@ -6,6 +6,13 @@ import { AxiosRequestConfig } from 'axios';
 @Injectable()
 export class GithubFetchersService {
   constructor(private readonly tokenManagerService: TokenManagerService, private readonly httpService: HttpService) {}
+  /**
+   * @TODO
+   * ErrorHandling
+   * token 인증에러
+   * 400번대 에러
+   *
+   */
   postRequest = async (query) => {
     const url = 'https://api.github.com/graphql';
     while (this.tokenManagerService.tokenLength > this.tokenManagerService.tryCount) {
@@ -23,14 +30,13 @@ export class GithubFetchersService {
       }
     }
   };
-  getRequest = async (url, username) => {
+
+  getRequest = async (url, params) => {
     while (this.tokenManagerService.tokenLength > this.tokenManagerService.tryCount) {
       console.log(this.tokenManagerService.getToken());
       try {
         const config: AxiosRequestConfig = {
-          params: {
-            q: `author:${username}`,
-          },
+          params: params,
           headers: {
             'Content-Type': 'application/json',
             Authorization: `bearer ${this.tokenManagerService.getToken()}`,
