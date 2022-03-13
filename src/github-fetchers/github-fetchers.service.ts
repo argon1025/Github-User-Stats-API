@@ -1,8 +1,9 @@
-import { HttpException, Injectable } from '@nestjs/common';
-import { async, catchError, lastValueFrom, map } from 'rxjs';
+import { Injectable } from '@nestjs/common';
+import { lastValueFrom, map } from 'rxjs';
 import { HttpService } from '@nestjs/axios';
 import { TokenManagerService } from 'src/tokenManager/tokenManager.service';
-import { AxiosRequestConfig } from 'axios';
+import { AxiosRequestConfig, AxiosResponse } from 'axios';
+import { getRequestConfig, postRequestConfig } from './dto/github-fetcher.dto';
 @Injectable()
 export class GithubFetchersService {
   constructor(private readonly tokenManagerService: TokenManagerService, private readonly httpService: HttpService) {}
@@ -13,9 +14,9 @@ export class GithubFetchersService {
    * 400번대 에러
    *
    */
-  postRequest = async (query) => {
+  async postRequest(query: postRequestConfig): Promise<AxiosResponse> {
     const url = 'https://api.github.com/graphql';
-    while (this.tokenManagerService.tokenLength > this.tokenManagerService.tryCount) {
+    while (this.tokenManagerService.tokenLength >= this.tokenManagerService.tryCount) {
       try {
         const config = {
           headers: {
@@ -29,11 +30,10 @@ export class GithubFetchersService {
         if (isBadCredentials) this.tokenManagerService.changeToken();
       }
     }
-  };
+  }
 
-  getRequest = async (url, params) => {
-    while (this.tokenManagerService.tokenLength > this.tokenManagerService.tryCount) {
-      console.log(this.tokenManagerService.getToken());
+  async getRequest(url: string, params: getRequestConfig): Promise<any> {
+    while (this.tokenManagerService.tokenLength >= this.tokenManagerService.tryCount) {
       try {
         const config: AxiosRequestConfig = {
           params: params,
@@ -49,5 +49,5 @@ export class GithubFetchersService {
         if (isBadCredentials) this.tokenManagerService.changeToken();
       }
     }
-  };
+  }
 }
