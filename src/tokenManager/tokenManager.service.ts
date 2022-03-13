@@ -10,7 +10,7 @@ export class TokenManagerService {
   public tryCount: number = 0;
   constructor(private configService: ConfigService) {
     this.LoadTokenDataFromEnv();
-    this.tokenLength = this.tokenList.length;
+    this.tokenLength = this.tokenList.length - 1;
   }
 
   // 토큰 데이터가 존재하는지 유무
@@ -58,46 +58,39 @@ export class TokenManagerService {
     }
   }
   // 토큰 스코프를 설정하는 함수
-  setTokenScope(tokenListNumber: number = 0) {
+  setTokenScope(tokenListNumber: number = 0): void {
     Logger.log(`change tokenListScope to ${tokenListNumber}`, 'setTokenScope');
     this.tokenListScope = tokenListNumber;
   }
   getTokenScope(): number {
     return this.tokenListScope;
   }
-
   // 현재 스코프된 토큰을 반환하는 함수
   getToken(): string {
     return this.tokenList[this.tokenListScope];
   }
-
   // 토큰 만료를 알리고 다른 토큰으로 변경요청을 받는 함수
-  changeToken() {
+  changeToken(): void {
     //토큰이 저장된 배열의 길이를 구한다
-    const tokenListLength = this.tokenList.length - 1;
     this.tryCount += 1;
     // 토큰 리스트에 데이터가 없을 경우
-    if (tokenListLength <= -1) {
+    if (this.tokenLength <= -1) {
       Logger.error('Token data does not exist in Env, stop changeToken');
-      return false;
     }
     // 토큰 리스트에 데이터가 하나밖에 없을경우
-    if (tokenListLength <= 0) {
+    if (this.tokenLength <= 0) {
       Logger.error('There is only one token data, stop changeToken');
-      return false;
     }
 
     // 토큰 리스트를 변경할 수 있을경우 경우에 따라 다르게 변경한다
-    if (tokenListLength === this.tokenListScope) {
+    if (this.tokenLength === this.tokenListScope) {
       //토큰 스코프를 초기화 한다
       this.setTokenScope(0);
       Logger.log(`TokenScope is Change -> ${this.getTokenScope()}`, 'CHANGE_TOKEN');
-      return true;
     } else {
       // 토큰스코프를 +1 증가시킨다
       this.setTokenScope(this.getTokenScope() + 1);
       Logger.log(`TokenScope is Change+ -> ${this.getTokenScope()}`, 'CHANGE_TOKEN');
-      return true;
     }
   }
 }
