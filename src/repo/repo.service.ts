@@ -1,5 +1,4 @@
 import { HttpException, Injectable } from '@nestjs/common';
-import { pinnedRepoResponse } from 'src/common/utils/axios/repo/pinnedRepoResponse';
 import { GithubFetchersService } from 'src/github-fetchers/github-fetchers.service';
 
 @Injectable()
