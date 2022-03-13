@@ -1,11 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { GithubFetchersService } from 'src/github-fetchers/github-fetchers.service';
-
+import { FetchingUserNameDto } from './dto/stats.dto';
+import { UserStats } from './interface/UserStats.interface';
 @Injectable()
 export class StatsService {
   constructor(private readonly githubFetchersService: GithubFetchersService) {}
-  async userStats(username) {
-    const stats = {
+  async userStats(fetchingUserNameDto: FetchingUserNameDto): Promise<UserStats> {
+    const { username } = fetchingUserNameDto;
+    const stats: UserStats = {
       name: '',
       totalPRs: 0,
       totalCommits: 0,
@@ -72,7 +74,8 @@ export class StatsService {
     }, 0);
     return stats;
   }
-  async topLanguage(username) {
+  async topLanguage(fetchingUserNameDto: FetchingUserNameDto): Promise<any> {
+    const { username } = fetchingUserNameDto;
     const topLanguageResponse = await this.githubFetchersService.postRequest({
       query: `
       query userInfo($login: String!) {
@@ -101,7 +104,6 @@ export class StatsService {
     });
 
     let repoNodes = topLanguageResponse.data.user.repositories.nodes;
-    let totalSize = 0;
     let repoToHide = {};
     // filter out repositories to be hidden
     repoNodes = repoNodes
@@ -129,7 +131,6 @@ export class StatsService {
           },
         };
       }, {});
-
     let topLangs = Object.keys(repoNodes)
       .sort((a, b) => repoNodes[b].size - repoNodes[a].size)
       .slice(0, 5)
@@ -137,7 +138,6 @@ export class StatsService {
         result[key] = repoNodes[key];
         return result;
       }, {});
-
     return topLangs;
   }
 }
