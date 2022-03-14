@@ -12,7 +12,7 @@ export class StatsController {
   @ApiOperation({ summary: 'Request User Stats data' })
   @ApiParam({
     name: 'username',
-    type: FetchingUserNameDto,
+    type: String,
     required: true,
     description: 'Github UserName',
   })
@@ -24,7 +24,7 @@ export class StatsController {
   @ApiOperation({ summary: 'Request User Top language data' })
   @ApiParam({
     name: 'username',
-    type: FetchingUserNameDto,
+    type: String,
     required: true,
     description: 'Github UserName',
   })

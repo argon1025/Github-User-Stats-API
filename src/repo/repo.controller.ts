@@ -12,7 +12,7 @@ export class RepoController {
   @ApiOperation({ summary: 'Request pinned Repositories data' })
   @ApiParam({
     name: 'username',
-    type: RepoDto,
+    type: String,
     required: true,
     description: 'Github UserName',
   })
