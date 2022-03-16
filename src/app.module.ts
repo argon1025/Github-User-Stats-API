@@ -1,13 +1,14 @@
-import { MiddlewareConsumer, NestModule } from '@nestjs/common';
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { LoggerMiddleware } from './middlewares/Logger.middleware';
 import { ConfigModule } from '@nestjs/config';
+import { MiddlewareConsumer, NestModule } from '@nestjs/common';
+import { LoggerMiddleware } from './middlewares/Logger.middleware';
+import { AppService } from './app.service';
+import { AppController } from './app.controller';
 import { StatsModule } from './stats/stats.module';
-import { TokenManagerModule } from './tokenManager/toeknManager.module';
 import { RepoModule } from './repo/repo.module';
-import { UsersModule } from './users/users.module';
+import { TokenManagerModule } from './tokenManager/toeknManager.module';
+import { GithubFetchersModule } from './github-fetchers/github-fetchers.module';
+import { CacheManagerModule } from './cache-manager/cache-manager.module';
 
 // Load ENV
 const ENV = process.env;
@@ -21,7 +22,8 @@ const ENV = process.env;
     StatsModule,
     TokenManagerModule,
     RepoModule,
-    UsersModule,
+    GithubFetchersModule,
+    CacheManagerModule,
   ],
   controllers: [AppController],
   providers: [AppService],

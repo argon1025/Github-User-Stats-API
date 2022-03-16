@@ -1,11 +1,25 @@
-<p align="center">
-  <img src="https://user-images.githubusercontent.com/55491354/127771279-28aba28e-f578-444c-b2e7-a54bbd852556.png" alt="stats" height="100" width="100"><br>
-  <b>Github User Stats API</b><br>
-  <a href="https://github.com/argon1025/Github-User-Stats-API/issues">💣Issue</a> |
-  <a href="https://github.com/argon1025/Github-User-Stats-API#endpoint">📚EndPoint Document</a> |
-  <a href="https://github.com/argon1025/TILog-server">🌌TILog Blog Project</a>
-  <br><br>
-</p>
+
+
+<div align="center">
+   <img src="https://user-images.githubusercontent.com/55491354/127771279-28aba28e-f578-444c-b2e7-a54bbd852556.png" alt="stats" height="100" width="100"><br>
+
+  <h3 align="center">TILog client</h3>
+
+  <p align="center">
+    Github User Stats API<br />
+    We are creating blog services using this project<a href="https://github.com/argon1025/TILog-server"> Here</a> <br />
+    <br />
+    <br />
+    <a href="https://github.com/argon1025/Github-User-Stats-API/issues/">Issue</a>
+    ·
+    <a href="https://github.com/argon1025/Github-User-Stats-API#endpoint">EndPoint Document</a>
+    ·
+    <a href="https://github.com/argon1025/TILog-servers">TILog Blog Project</a>
+  </p>
+</div>
+
+# Project Status
+Last Release Build : [![CircleCI](https://circleci.com/gh/argon1025/Github-User-Stats-API/tree/release.svg?style=svg)](https://circleci.com/gh/argon1025/Github-User-Stats-API/tree/release)
 
 # how It works?
 Since the GitHub API only allows 5k requests per hour,  

@@ -3,5 +3,6 @@ import { TokenManagerService } from './tokenManager.service';
 
 @Module({
   providers: [TokenManagerService],
+  exports: [TokenManagerService],
 })
 export class TokenManagerModule {}
