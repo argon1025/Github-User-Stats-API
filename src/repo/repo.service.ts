@@ -1,13 +1,12 @@
-import { HttpException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
+import { PinnedRepo, RepoDto } from './dto/repo.dto';
 import { GithubFetchersService } from 'src/github-fetchers/github-fetchers.service';
-import { RepoDto } from './dto/repo.dto';
-import { Repo } from './interface/repo.interface';
 
 @Injectable()
 export class RepoService {
   constructor(private readonly githubFetchersService: GithubFetchersService) {}
 
-  async pinnedRepo(repoDto: RepoDto): Promise<Repo[]> {
+  async pinnedRepo(repoDto: RepoDto): Promise<PinnedRepo[]> {
     const { username } = repoDto;
     const pinnedRepoResponse = await this.githubFetchersService.postRequest({
       query: `
@@ -47,6 +46,8 @@ export class RepoService {
       },
     });
     let pinnedItems = pinnedRepoResponse.data.user.pinnedItems.nodes;
+    console.log(pinnedItems);
+
     return pinnedItems;
   }
 }

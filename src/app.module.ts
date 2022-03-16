@@ -7,7 +7,8 @@ import { AppController } from './app.controller';
 import { StatsModule } from './stats/stats.module';
 import { RepoModule } from './repo/repo.module';
 import { TokenManagerModule } from './tokenManager/toeknManager.module';
-import { GithubStatsModule } from './github-fetchers/github-fetchers.module';
+import { GithubFetchersModule } from './github-fetchers/github-fetchers.module';
+import { CacheManagerModule } from './cache-manager/cache-manager.module';
 
 // Load ENV
 const ENV = process.env;
@@ -21,7 +22,8 @@ const ENV = process.env;
     StatsModule,
     TokenManagerModule,
     RepoModule,
-    GithubStatsModule,
+    GithubFetchersModule,
+    CacheManagerModule,
   ],
   controllers: [AppController],
   providers: [AppService],

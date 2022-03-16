@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
+import { FetchingUserNameDto, TopLanguage, UserStats } from './dto/stats.dto';
 import { GithubFetchersService } from 'src/github-fetchers/github-fetchers.service';
-import { FetchingUserNameDto } from './dto/stats.dto';
-import { UserStats } from './interface/UserStats.interface';
+
 @Injectable()
 export class StatsService {
   constructor(private readonly githubFetchersService: GithubFetchersService) {}
   async userStats(fetchingUserNameDto: FetchingUserNameDto): Promise<UserStats> {
     const { username } = fetchingUserNameDto;
-    const stats: UserStats = {
+    let stats: UserStats = {
       name: '',
       totalPRs: 0,
       totalCommits: 0,
@@ -15,6 +15,7 @@ export class StatsService {
       totalStars: 0,
       contributedTo: 0,
     };
+
     const userStatsResponse = await this.githubFetchersService.postRequest({
       query: `
               query userInfo($login: String!) {
@@ -74,7 +75,7 @@ export class StatsService {
     }, 0);
     return stats;
   }
-  async topLanguage(fetchingUserNameDto: FetchingUserNameDto): Promise<any> {
+  async topLanguage(fetchingUserNameDto: FetchingUserNameDto): Promise<TopLanguage[]> {
     const { username } = fetchingUserNameDto;
     const topLanguageResponse = await this.githubFetchersService.postRequest({
       query: `
@@ -135,9 +136,9 @@ export class StatsService {
       .sort((a, b) => repoNodes[b].size - repoNodes[a].size)
       .slice(0, 5)
       .reduce((result, key) => {
-        result[key] = repoNodes[key];
+        result.push(repoNodes[key]);
         return result;
-      }, {});
+      }, []);
     return topLangs;
   }
 }
